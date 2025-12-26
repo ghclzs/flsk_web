@@ -7,6 +7,6 @@ db = SQLAlchemy()
 migrate = Migrate()
 
 
-def init_extensions(app):
-    db.init_app(app)  # 将数据库连接绑定到Flask app
-    migrate.init_app(app, db)
+# def init_extensions(app):
+#     db.init_app(app)  # 将数据库连接绑定到Flask app
+#     migrate.init_app(app, db)

@@ -1,5 +1,6 @@
 # from app.blueprints.auth.routes import auth_bp
 from app.blueprints.code.routes import code_bp
+from app.blueprints.result.routes import result_bp
 from app.blueprints.student.routes import student_bp
 # from app.blueprints.user.routes import user_bp
 
@@ -9,3 +10,4 @@ def register_blueprints(app):
     # app.register_blueprint(user_bp)
     app.register_blueprint(code_bp)
     app.register_blueprint(student_bp)
+    app.register_blueprint(result_bp)

@@ -12,6 +12,7 @@ student_bp = Blueprint("student", __name__, url_prefix="/student")
 
 @student_bp.route("/get_detail/<int:stu_id>", methods=["GET"])
 def studet_detail(stu_id):
+
     try:
         student = Student.query.get(stu_id)
         if not student:
