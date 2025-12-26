@@ -3,7 +3,7 @@ import os
 from logging.handlers import RotatingFileHandler
 
 from app.config import config
-from app.extensions import db, migrate
+from app.extensions import db, migrate, cors
 from app.blueprints import register_blueprints
 from app.utils.response import success
 from flask import Flask, request, jsonify, g
@@ -63,9 +63,9 @@ def create_app(config_name=None):
     # 初始化扩展
     db.init_app(app)
     migrate.init_app(app, db)
+    cors.init_app(app)  # 启用CORS支持
 
     # 4. 关键：导入模型（必须在db.init_app之后）
-    # 让db识别模型，否则迁移工具无法生成表
     with app.app_context():
         from app.models import student  # 导入所有模型文件
 
