@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app
 
 from app.services.code.code_services import CodeServices
 from app.utils.response import success, fail
@@ -11,7 +11,7 @@ code_bp = Blueprint("code", __name__, url_prefix="/code")
 def login_code():
     phone = request.args.get("phone")
     type = request.args.get("type")
-    print(phone, type)
+    current_app.logger.info(f"开始获取登录验证码，手机号：{phone}，类型：{type}")
     if type == "app":
         data = CodeServices().get_edu_app_captcha(phone)
     if type == "edu_c":
