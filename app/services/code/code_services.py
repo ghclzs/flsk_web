@@ -1,5 +1,5 @@
 import requests
-
+import redis
 
 
 admin_token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJ1c2VyX25hbWUiOiJjYW95b25neW9uZ0Bncm91cHl1c2h1bi5jb20iLCJyZWFsX25hbWUiOiLmm7nli4fli4ciLCJhdmF0YXIiOiIiLCJhdXRob3JpdGllcyI6WyJQVF9URVNUX0xFQURFUiJdLCJjbGllbnRfaWQiOiJjX3VuaWFwcCIsInJvbGVfbmFtZSI6IlBUX1RFU1RfTEVBREVSIiwibGljZW5zZSI6InBvd2VyZWQgYnkgYmxhZGV4IiwicG9zdF9pZCI6IiIsInVzZXJfaWQiOiIxNzczNTQ2Mjg4MTA3MTYzNjQ5Iiwicm9sZV9pZCI6IjE3NTI4ODQyNTUyODY4MzMxNTQiLCJzY29wZSI6WyJhbGwiXSwibmlja19uYW1lIjoiIiwib2F1dGhfaWQiOiIiLCJkZXRhaWwiOnsidHlwZSI6IndlYiIsInBob25lIjoiMTg3NzA4MTMyOTIiLCJjdXN0b21lcklkIjpudWxsLCJyb2xlSWQiOm51bGwsInVzZXJUeXBlIjoxLCJmaXJzdFJlZ2lzdGVyIjpmYWxzZX0sImV4cCI6MjMzNzQ3MTc5MiwiZGVwdF9pZCI6Ii0xIiwianRpIjoiZjdkYmFhZjYtZmM1ZC00YjI5LWE4YzYtMzUwNzFmZTdhNmJkIiwiYWNjb3VudCI6ImNhb3lvbmd5b25nQGdyb3VweXVzaHVuLmNvbSJ9.3fICcymFed0in_TbfAlrBJO0ksuXm46BRlUr26RRVR0"
@@ -31,16 +31,25 @@ class CodeServices():
         result = requests.get(url=url,headers=self.header).json()
         return result
 
-    #查询bweb验证码
+    #查询m站验证码
     def get_B_captcha(self,phone):
         url = self.url + "/api/biz-fnd/cache/get?key=m-website:phone_captcha:" + str(phone)
         result = requests.get(url=url, headers=self.header).json()
         return result
 
+
+    #查询教培圈b小程序验证码
     def get_edu_b_captcha(self,phone):
         url = self.url + "/api/biz-fnd/cache/get?key=edu:login:phone_captcha:" + str(phone)
         result = requests.get(url=url, headers=self.header).json()
         return result
+
+    # 教培bweb端验证码
+    def get_edu_bweb_captcha(self,phone):
+        url = self.url + "/api/biz-fnd/cache/get?key=edu-b-applet:login:phone_captcha:" + str(phone)
+        result = requests.get(url=url, headers=self.header).json()
+        return result
+
     def get_edu_app_captcha(self, phone):
         url = self.url + "/api/biz-fnd/cache/get?key=edu-app-applet:login:phone_captcha:" + str(phone)
         result = requests.get(url=url, headers=self.header).json()
@@ -66,6 +75,25 @@ class CodeServices():
         url = self.url + "/api/biz-fnd/cache/get?key=edu-app-applet:login:bind_phone_captcha:" + str(phone)
         result = requests.get(url=url, headers=self.header).json()
         return result
+
+
+    # 获取教培圈c端验证码
+    def get_tset_captcha(self,phone,type):
+        if type == "edu_c_test":
+            code = self.connection_redis(key="edu-c-applet:login:phone_captcha:" + str(phone))
+            return code
+        if type == "c_test":
+            code = self.connection_redis(key="c-applet:login:phone_captcha:" + str(phone))
+            return code
+        return None
+
+    #连接redis 库
+    def connection_redis(self, key):
+        # 连接redis
+        redis_connection = redis.Redis(host='139.9.0.72', port=32637, db=0, password='Zp1234!@#$',
+                                       decode_responses=True)
+        code = redis_connection.get(key)
+        return code
 
     # redis登录验证key
     # c端小程序
@@ -100,8 +128,9 @@ if __name__ == '__main__':
 
     # res = select_online_captcha().all_main("edu", 11000000060)
     # res = select_online_captcha().all_main("b", 18770813292)
-    res = CodeServices().get_edu_app_captcha(10000000105)
+    # res = CodeServices().get_edu_app_captcha(10000000001)
     # res = select_online_captcha().get_edu_c_captcha(10000000095)
+    res = CodeServices().get_tset_captcha(type="c_test",phone=10000000003)
 
 
 
